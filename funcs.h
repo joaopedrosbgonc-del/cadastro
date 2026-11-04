@@ -1,147 +1,160 @@
+
+#ifndef FUNCS_H
+#define FUNCS_H
+
 #include <stdio.h>
-#include <windows.h>
+#include <stdlib.h>
+#include <string.h>
 
-typedef struct{
-    char nome[50], curso[30];
-    int matricula;
-}Aluno;
+// 1 - CADASTRAR
+void cadastrar(int codigo[], char nome[][15], int *total) {
 
-Aluno alunos[100];
-int total_alunos = 0;
-
-void titulo(){
     system("cls");
-    printf("----------------------------------\n");
-    printf("        Cadastro de alunos        \n");
-    printf("----------------------------------");
-    printf("\n1 - Cadastrar aluno\n");
-    printf("2 - Consultar aluno cadastrado\n");
-    printf("3 - Alunos cadastrados\n");
-    printf("4 - Editar aluno\n");
-    printf("5 - Excluir aluno\n");
-    printf("0 - Sair\n");
-    printf("\nEscolha uma opcao [digite um numero]\n--> ");
-}
+    printf("        CADASTRAR\n");
 
-void cadastro(){
-    system("cls");
-    printf("        CADASTRAR ALUNO");
+    if (*total == 5) {
+        printf("\nCadastro cheio!\n\n");
+        system("pause");
+        return;
+    }
 
+    printf("\nQual o codigo?\n--> ");
+    scanf("%d", &codigo[*total]);
+    getchar();
 
     printf("\nQual o nome?\n--> ");
-    fgets(alunos[total_alunos].nome, 50, stdin);
-    alunos[total_alunos].nome[strcspn(alunos[total_alunos].nome, "\n")] = 0;
+    fgets(nome[*total], 15, stdin);
+    nome[*total][strcspn(nome[*total], "\n")] = '\0';
 
-    printf("\nQual o curso?\n--> ");
-    fgets(alunos[total_alunos].curso, 30, stdin);
-    alunos[total_alunos].curso[strcspn(alunos[total_alunos].curso, "\n")] = 0;
+    (*total)++;
 
-    alunos[total_alunos].matricula = total_alunos + 1000;
-
-    system("cls");
-    printf("NOME:      Curso:      MATRICULA:\n");
-    printf("\n%s | %s | %d\n", alunos[total_alunos].nome, alunos[total_alunos].curso, alunos[total_alunos].matricula);
-    printf("\nAluno cadastrado com sucesso!\n\n");
-
-    total_alunos ++;
-    system("pause");
-
-}
-
-void consulta(){
-    system("cls");
-    int temp, encontrado=0;
-    printf("        Consultar aluno\n");
-    printf("\nQual a matricula?\n--> ");
-    scanf(" %d", &temp);
-
-    for(int i=0; i <= total_alunos; i++){
-        if(alunos[i].matricula == temp){
-
-            printf("\n%s | %s | %d\n\n", alunos[i].nome, alunos[i].curso, alunos[i].matricula);
-            system("pause");
-            encontrado = 1;
-            break;
-
-        }
-    }
-    if(encontrado == 0){
-        printf("Matricula nao encontrada! ");
-    }
-}
-
-void listar(){
-    system("cls");
-    printf("        Alunos cadastrados:\n");
-
-    for(int i=0; i< total_alunos; i++){
-        printf("%s | %s | %d\n", alunos[i].nome, alunos[i].curso, alunos[i].matricula);
-    }
+    printf("\nCadastro realizado com sucesso!\n\n");
     system("pause");
 }
 
-void editar(){
-    int encontrado = 0, temp;
+// 2 - CONSULTAR
+void consultar(int codigo[], char nome[][15], int total) {
+
+    int busca, encontrado = 0;
+
     system("cls");
-    printf("        Editar Cadastro\n");
+    printf("        CONSULTAR\n");
 
-    printf("\nQual a matricula que deseja editar?\n--> ");
-    scanf(" %d", &temp);
-    while (getchar() != '\n');
+    printf("\nQual o codigo?\n--> ");
+    scanf("%d", &busca);
 
-    for(int i = 0; i < total_alunos; i++){
-        if(alunos[i].matricula == temp){
-            printf("\n %s | %s | %d\n\n", alunos[i].nome, alunos[i].curso, alunos[i].matricula);
-            
-            printf("Qual o novo nome?\n--> ");
-            fgets(alunos[i].nome, 50, stdin);
-            alunos[i].nome[strcspn(alunos[i].nome, "\n")] = 0;
+    for (int i = 0; i < total; i++) {
 
-            printf("Qual o novo curso?\n--> ");
-            fgets(alunos[i].curso, 50, stdin);
-            alunos[i].curso[strcspn(alunos[i].curso, "\n")] = 0;
+        if (codigo[i] == busca) {
+            printf("\nCodigo: %d\n", codigo[i]);
+            printf("Nome: %s\n\n", nome[i]);
 
             encontrado = 1;
             break;
         }
     }
-    if(encontrado == 0){
-        system("cls");
-        printf("\nCadastro nao encontrado!\n");
-        system("pause");
+
+    if (encontrado == 0) {
+        printf("\nCodigo nao encontrado!\n\n");
     }
+
+    system("pause");
 }
 
-void excluir(){
-    int encontrado = 0, temp;
+// 3 - LISTAR
+void listar(int codigo[], char nome[][15], int total) {
+
     system("cls");
-    printf("        Editar Cadastro\n");
+    printf("        REGISTROS CADASTRADOS\n\n");
 
-    printf("\nQual a matricula que deseja editar?\n--> ");
-    scanf(" %d", &temp);
-    while (getchar() != '\n');
+    if (total == 0) {
+        printf("Nenhum registro cadastrado.\n");
+    }
 
-    for(int i = 0; i < total_alunos; i++){
-        if(temp == alunos[i].matricula){
+    for (int i = 0; i < total; i++) {
+        printf("%d | %s\n", codigo[i], nome[i]);
+    }
 
-            char nome[50];
-            strcpy(nome, alunos[i].nome);
+    printf("\n");
+    system("pause");
+}
 
-            for(int j = i; j < total_alunos - 1; j++){
-                alunos[j] = alunos[j + 1];
+// 4 - ALTERAR
+void alterar(int codigo[], char nome[][15], int total) {
+
+    int busca, encontrado = 0;
+
+    system("cls");
+    printf("        ALTERAR\n");
+
+    printf("\nQual o codigo que deseja alterar?\n--> ");
+    scanf("%d", &busca);
+    getchar();
+
+    for (int i = 0; i < total; i++) {
+
+        if (codigo[i] == busca) {
+
+            printf("\nRegistro atual: %d | %s\n\n", codigo[i], nome[i]);
+
+            printf("Qual o novo codigo?\n--> ");
+            scanf("%d", &codigo[i]);
+            getchar();
+
+            printf("\nQual o novo nome?\n--> ");
+            fgets(nome[i], 15, stdin);
+            nome[i][strcspn(nome[i], "\n")] = '\0';
+
+            printf("\nRegistro alterado com sucesso!\n\n");
+
+            encontrado = 1;
+            break;
+        }
+    }
+
+    if (encontrado == 0) {
+        printf("\nCodigo nao encontrado!\n\n");
+    }
+
+    system("pause");
+}
+
+// 5 - EXCLUIR
+void excluir(int codigo[], char nome[][15], int *total) {
+
+    int busca, encontrado = 0;
+
+    system("cls");
+    printf("        EXCLUIR\n");
+
+    printf("\nQual o codigo que deseja excluir?\n--> ");
+    scanf("%d", &busca);
+
+    for (int i = 0; i < *total; i++) {
+
+        if (codigo[i] == busca) {
+
+            printf("\nRegistro removido: %s\n", nome[i]);
+
+            for (int j = i; j < *total - 1; j++) {
+                codigo[j] = codigo[j + 1];
+                strcpy(nome[j], nome[j + 1]);
             }
 
-            total_alunos --;
+            (*total)--;
+
+            printf("\nRegistro excluido com sucesso!\n\n");
+
             encontrado = 1;
-            
-            printf("\nAluno(a) %s removido com sucesso!\n", nome);
-            system("pause");
             break;
         }
     }
-    if(encontrado == 0){
-        system("cls");
-        printf("cadastro nao encontrado!");
-        system("pause");
+
+    if (encontrado == 0) {
+        printf("\nCodigo nao encontrado!\n\n");
     }
+
+    system("pause");
 }
+
+#endif
